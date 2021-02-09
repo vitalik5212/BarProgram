@@ -1,0 +1,12 @@
+<component name="ArtifactManager">
+  <artifact type="jar" name="BarProgram:jar">
+    <output-path>$PROJECT_DIR$/out/artifacts/BarProgram_jar</output-path>
+    <root id="archive" name="BarProgram.jar">
+      <element id="directory" name="META-INF">
+        <element id="file-copy" path="$PROJECT_DIR$/../META-INF/MANIFEST.MF" />
+      </element>
+      <element id="module-output" name="BarProgram" />
+      <element id="extracted-dir" path="$MAVEN_REPOSITORY$/org/postgresql/postgresql/42.2.18.jre7/postgresql-42.2.18.jre7.jar" path-in-jar="/" />
+    </root>
+  </artifact>
+</component>
