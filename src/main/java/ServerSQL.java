@@ -1,4 +1,5 @@
 import java.sql.*;
+import java.util.Scanner;
 
 public class ServerSQL
 {
@@ -9,6 +10,8 @@ public class ServerSQL
     private static Connection connection = null;
     private static Statement statement = null;
     private static ResultSet resultSet = null;
+
+    private static final String EXECUTE_DELETE = "DELETE FROM \"Alcohol\" WHERE ? = '?'";
 
     public static void initialize()
     {
@@ -80,6 +83,22 @@ public class ServerSQL
     {
         try {
             statement.execute("DELETE FROM \"Alcohol\" WHERE name='" + name + "';");
+        } catch (SQLException ex) {
+            ex.printStackTrace();
+        }
+    }
+
+
+
+    public static void removeWhichArguments(String argument, String element)
+    {
+        try {
+            Statement prepareStatement = connection.prepareStatement(EXECUTE_DELETE);
+
+            prepareStatement.addBatch(argument);
+            prepareStatement.addBatch(element);
+
+
         } catch (SQLException ex) {
             ex.printStackTrace();
         }
