@@ -1,0 +1,10 @@
+<hibernate-mapping>
+    <class name="drinks.Alcohol" table="Alcohol">
+        <id column="ID" name="id" type="java.lang.Long">
+            <generator class="increment"/>
+        </id>
+        <property column="name" name="name" type="java.lang.String"/>
+        <property column="land" name="land" type="java.lang.String"/>
+        <property column="strenght" name="strenght" type="java.lang.Integer"/>
+    </class>
+</hibernate-mapping>
