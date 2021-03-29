@@ -1,48 +1,83 @@
-import drinks.Alcohol;
+import entity.Alcohol;
+import entity.Alcohol_;
 import org.hibernate.Session;
+import org.hibernate.Transaction;
 
-import java.sql.SQLException;
-import java.util.ArrayList;
-import java.util.Collection;
+import javax.persistence.Query;
+import javax.persistence.criteria.*;
 import java.util.List;
 
-public class SessionHibernate implements  AlcoholDAO
+public class SessionHibernate
 {
+    private Session session;
 
-    @Override
-    public void addAlcohol(Alcohol alcohol) throws SQLException {
-
+    public SessionHibernate() {
+        session = HibernateUtil.getSessionFactory().openSession();
     }
 
-    @Override
-    public void deleteAlcohol(Alcohol alcohol) throws SQLException {
-
-    }
-
-    @Override
-    public List<Alcohol> getAll() throws SQLException
+    public List<Alcohol> getAll()
     {
-        Session session = null;
-        List<Alcohol> list = new ArrayList<>();
+        CriteriaBuilder criteriaBuilder = session.getCriteriaBuilder();
+        CriteriaQuery<Alcohol> criteriaQuery = criteriaBuilder.createQuery(Alcohol.class);
+        Root<Alcohol> root = criteriaQuery.from(Alcohol.class);
 
-        try {
-            session = HibernateUtil.getSessionFactory().openSession();
-            session.beginTransaction();
-            list = session.
+        criteriaQuery.select(root);
 
-        } catch (Exception ex) {
-            ex.printStackTrace();
-        } finally {
-            if (session != null && session.isOpen()) {
-                session.close();
-            }
-        }
+        Query query = session.createQuery(criteriaQuery);
+
+        List<Alcohol> list = query.getResultList();
 
         return list;
     }
 
-    @Override
-    public Collection getAllName() throws SQLException {
-        return null;
+    public List<Alcohol> getAll(String atribute, String like)
+    {
+        CriteriaBuilder criteriaBuilder = session.getCriteriaBuilder();
+        CriteriaQuery criteriaQuery = criteriaBuilder.createQuery(Alcohol.class);
+        Root<Alcohol> root = criteriaQuery.from(Alcohol.class);
+
+        ParameterExpression<String> parameter = criteriaBuilder.parameter(String.class, "param1");
+
+        criteriaQuery.select(root)
+                .where(criteriaBuilder.like(parameter, root.get(atribute)));
+
+        Query query = session.createQuery(criteriaQuery)
+                .setParameter("param1", like);
+
+        List<Alcohol> list = query.getResultList();
+
+        return list;
+    }
+
+    public List<Alcohol> getAllName()
+    {
+        CriteriaBuilder criteriaBuilder = session.getCriteriaBuilder();
+        CriteriaQuery criteriaQuery = criteriaBuilder.createQuery(Alcohol.class);
+        Root<Alcohol> root = criteriaQuery.from(Alcohol.class);
+        Selection[] selection = {root.get(Alcohol_.NAME)};
+
+        criteriaQuery.select(criteriaBuilder.construct(Alcohol.class, selection));
+        Query query = session.createQuery(criteriaQuery);
+
+        List<Alcohol> list = query.getResultList();
+
+        return list;
+    }
+
+    public void add(Alcohol alcohol)
+    {
+        Transaction transaction = session.getTransaction();
+        transaction.begin();
+
+        session.save(alcohol);
+
+        transaction.commit();
+    }
+
+
+
+    public void sessionClose()
+    {
+        session.close();
     }
 }

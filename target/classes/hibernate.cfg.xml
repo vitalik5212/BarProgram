@@ -1,12 +1,27 @@
-<hibernate-configuration xmlns="http://www.hibernate.org/xsd/orm/cfg">
-    <session-factory>
-        <property name="connection.url">jdbc:postgresql://localhost:5432/BarProgram</property>
-        <property name="connection.driver_class">org.postgresql.Driver</property>
-        <property name="connection.username">postgres</property>
-        <property name="connection.password">root</property>
-        <property name="connection.pool_size">1</property>
-        <property name="dialect">org.hibernate.dialect.PostgreSQL94Dialect</property>
+<?xml version='1.0' encoding='utf-8'?>
+<!DOCTYPE hibernate-configuration PUBLIC
+    "-//Hibernate/Hibernate Configuration DTD//EN"
+    "http://www.hibernate.org/dtd/hibernate-configuration-3.0.dtd">
+<hibernate-configuration>
+  <session-factory>
+    <property name="connection.url">jdbc:postgresql://localhost:5432/BarProgram?currentSchema=public</property>
+    <property name="connection.driver_class">org.postgresql.Driver</property>
+    <property name="connection.username">postgres</property>
+    <property name="connection.password">root</property>
 
-        <mapping resource="Alcohol.hbm.xml"/>
-    </session-factory>
+    <property name="connection.characterEncoding">utf8</property>
+    <property name="connection.pool_size">5</property>
+    <property name="default_schema">public</property>
+
+    <property name="current_session_context_class">thread</property>
+
+    <property name="cache.region.factory_class">org.hibernate.cache.ehcache.internal.EhcacheRegionFactory</property>
+
+    <property name="generate_statistics">true</property>
+
+<!--    <property name="show_sql">true</property>-->
+<!--    <property name="format_sql">true</property>-->
+
+    <mapping class="entity.Alcohol"/>
+  </session-factory>
 </hibernate-configuration>

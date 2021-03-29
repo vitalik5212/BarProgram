@@ -1,11 +1,20 @@
+import entity.Alcohol;
+import entity.Alcohol_;
+
+import java.sql.SQLOutput;
 import java.util.*;
 
 public class Menu
         implements Runnable
 {
-    private final Scanner scanner = new Scanner(System.in);
+    private Scanner scanner;
+    private SessionHibernate database;
 
-    public Menu() {}
+    public Menu()
+    {
+        scanner = new Scanner(System.in);
+        database = new SessionHibernate();
+    }
 
     @Override
     public void run()
@@ -26,29 +35,29 @@ public class Menu
                     add();
                     break;
                 case "remove" :
-                    ServerSQL.remove(commandElement[1]);
                     break;
                 case "list":
                     System.out.println("List alcohol:");
-                    ServerSQL.getAllCollum();
+                    printAllName();
                     break;
                 case "listAll" :
-                    ServerSQL.getAll();
+                    System.out.println("All list with alcohol:");
+                    printAllList();
                     break;
                 case "search" :
-                    ServerSQL.getLineByCollum("name", commandElement[1]);
+                    System.out.println("Result");
+                    printAllList(commandElement[1]);
                     break;
                 case "size" :
-                    System.out.println(ServerSQL.size());
                     break;
                 case "editor" :
-                    editor(commandElement[1]);
                     break;
                 case "help" :
                     help();
                     break;
             }
         }
+        database.sessionClose();
     }
 
 
@@ -71,25 +80,49 @@ public class Menu
     void add()
     {
         try {
-            String name;
-            String land;
-            int strength;
+            Alcohol alcohol = new Alcohol();
 
             System.out.print("Write info about alcohol\n name - ");
-            name = scanner.nextLine();
+            alcohol.setName(scanner.nextLine());
 
             System.out.print("land - ");
-            land = scanner.nextLine();
+            alcohol.setLand(scanner.nextLine());
 
             System.out.print("strength - ");
-            strength = scanner.nextInt();
+            alcohol.setStrenght(scanner.nextInt());
 
-            ServerSQL.write(name, land, strength);
+            database.add(alcohol);
 
             System.out.println("Completed");
         } catch (Exception ex) {
             ex.printStackTrace();
         }
+    }
+
+    void printAllList()
+    {
+        System.out.println("Name\t\t\t{Land\t\tStrenght}");
+        for (Alcohol alcohol : database.getAll()) {
+            System.out.println(alcohol.getName() + "\t\t\t{" + alcohol.getLand() + "\t\t" + alcohol.getStrenght() + "}");
+        }
+        System.out.println("///////////////////////");
+    }
+
+    void printAllList(String name)
+    {
+        System.out.println("Name\t\t\t{Land\t\tStrenght}");
+        for (Alcohol alcohol : database.getAll(Alcohol_.NAME, name)) {
+            System.out.println(alcohol.getName() + "\t\t\t{" + alcohol.getLand() + "\t\t" + alcohol.getStrenght() + "}");
+        }
+        System.out.println("///////////////////////");
+    }
+
+    void printAllName()
+    {
+        for (Alcohol alcohol : database.getAllName()) {
+            System.out.println(alcohol.getName());
+        }
+        System.out.println("///////////////////////");
     }
 
 
