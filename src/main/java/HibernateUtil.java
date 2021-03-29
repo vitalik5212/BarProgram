@@ -1,15 +1,20 @@
 import org.hibernate.SessionFactory;
-import org.hibernate.cfg.Configuration;
+import org.hibernate.boot.MetadataSources;
+import org.hibernate.boot.registry.StandardServiceRegistry;
+import org.hibernate.boot.registry.StandardServiceRegistryBuilder;
 
 public class HibernateUtil
 {
-    private static final SessionFactory sessionFactory;
+    private static SessionFactory sessionFactory;
+
     static {
+        final StandardServiceRegistry standardServiceRegistry = new StandardServiceRegistryBuilder()
+                .configure()
+                .build();
         try {
-            sessionFactory = new Configuration().configure().buildSessionFactory();
+            sessionFactory = new MetadataSources(standardServiceRegistry).buildMetadata().buildSessionFactory();
         } catch (Throwable ex) {
-            System.err.println("initial SessionFactory is failed" + ex);
-            throw new ExceptionInInitializerError(ex);
+            StandardServiceRegistryBuilder.destroy(standardServiceRegistry);
         }
     }
 
